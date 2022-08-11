@@ -2,8 +2,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const stuffRoutes = require("./routes/stuff.js");
 const userRoutes = require("./routes/user.js");
-
 const app = express();
+
+app.use("/api/stuff", stuffRoutes);
+app.use("/api/auth", userRoutes);
+
 app.use((req, res, next) => 
 {
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -21,6 +24,4 @@ mongoose.connect("mongodb+srv://spartan:spartan@gofullstackcluster.f4srqjc.mongo
 
 app.use(express.json());
 
-app.use("/api/stuff", stuffRoutes);
-app.use("/api/auth", userRoutes);
 module.exports = app;

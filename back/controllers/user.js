@@ -15,9 +15,12 @@ exports.signup = (req, res, next) =>
             console.error(`c'est une bad request 1 ! ${error}`)
             res.status(400).json({error})
         });
+        console.log("user created");
     })
     .catch((error) => 
     {
+        console.log(`this is req: ${req}`);
+        console.log(`this is req body: ${req.body}`);
         console.error(` c'est une erreur 1 ! ${error}`);
         res.status(500).json({error})
     });
@@ -25,24 +28,28 @@ exports.signup = (req, res, next) =>
 
 exports.login = (req, res, next) =>
 {
-    User.findOne(req.body.email)
+    User.findOne({email: req.body.email})
     .then(user => 
     {
-        if(user === null)
-            res.status(401).json({message: "email/mdp incorrect"})
+        if(!user === null)
+            return res.status(401).json({message: "email/mdp incorrect"})
         else
         {
             bcrypt.compare(req.body.password, user.password)
             .then(valid => 
             {
-                if(!valid)res.status(401).json({message: "email/mdp incorrect"})
+                if(!valid)
+                    return res.status(401).json({message: "email/mdp incorrect"})
                 else
-                    res.status(200).json({userId: user._id, token: jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", {expiresIn: "24h"})})
+                {
+                    res.status(200).json({
+                        userId: user._id, token: jwt.sign({ userId: user._id },
+                        "RANDOM_TOKEN_SECRET", {expiresIn: '24h'})
+                    });   
+                }
             })
             .catch((error) => 
             {
-                console.log(`this is req: ${req}`);
-                console.log(`this is req body: ${req.body}`);
                 console.log(user);
                 console.error(`cet une erreur 2 ! ${error}`)
                 res.status(500).json({error})
