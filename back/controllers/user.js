@@ -1,9 +1,19 @@
+const express = require("express");
+const app = express();
+const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const User = require("../models/Users.js");
 const jwt = require("jsonwebtoken");
+const { application } = require("express");
+const { urlencoded } = require("body-parser");
+
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 exports.signup = (req, res, next) =>
 {
+    console.log(`THIS IS BODY: ${req.body.email}`);
+    console.log(req.body);
     bcrypt.hash(req.body.password, 10)
     .then(hash => 
     {
@@ -15,19 +25,17 @@ exports.signup = (req, res, next) =>
             console.error(`c'est une bad request 1 ! ${error}`)
             res.status(400).json({error})
         });
-        console.log("user created");
     })
     .catch((error) => 
     {
-        console.log(`this is req: ${req}`);
-        console.log(`this is req body: ${req.body}`);
-        console.error(` c'est une erreur 1 ! ${error}`);
         res.status(500).json({error})
     });
 }
 
 exports.login = (req, res, next) =>
 {
+    
+    console.log(req.headers);
     User.findOne({email: req.body.email})
     .then(user => 
     {

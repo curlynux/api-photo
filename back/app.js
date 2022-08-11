@@ -2,7 +2,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const stuffRoutes = require("./routes/stuff.js");
 const userRoutes = require("./routes/user.js");
+const cors = require("cors");
+
 const app = express();
+app.use(cors())
 
 app.use("/api/stuff", stuffRoutes);
 app.use("/api/auth", userRoutes);
